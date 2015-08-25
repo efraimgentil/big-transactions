@@ -1,4 +1,4 @@
-package br.com.efraimgentil.bigtransactions;
+package br.com.efraimgentil.bigtransactions.entities;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -8,16 +8,18 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
 @Table(name="employee")
-public class Employee implements Serializable{
+public class EmployeeWithoutIdentity implements Serializable{
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE , generator = "employee_id_seq")
+	@SequenceGenerator(name="employee_id_seq" , sequenceName="employee_id_seq" , allocationSize = 1000 )
 	@Column(name="id")
 	private Long id;
 	
@@ -37,11 +39,11 @@ public class Employee implements Serializable{
 	@Column(name="birth_date")
 	private Date birthDate;
 	
-	public Employee() {
+	public EmployeeWithoutIdentity() {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public Employee(long i) {
+	public EmployeeWithoutIdentity(long i) {
 		name = "Generic Employee " + i;
 		sex = "M";
 		fatherName = "Generic Employee Father " + i;
