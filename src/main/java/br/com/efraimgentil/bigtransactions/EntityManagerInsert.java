@@ -15,16 +15,18 @@ import org.hibernate.ejb.TransactionImpl;
 import org.hibernate.internal.SessionImpl;
 
 import br.com.efraimgentil.bigtransactions.entities.Employee;
+import br.com.efraimgentil.bigtransactions.entities.EmployeeWithoutIdentity;
 
 public class EntityManagerInsert implements Insert {
 
 	public static void main(String[] args) {
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory("examplePU");
-		Config config = new Config(1000000l, true);
+		EntityManagerFactory emf = Persistence.createEntityManagerFactory("examplePUBatch");
+		Config config = new Config(100050l, true);
 		config.setEmf(emf);
-		new EntityManagerInsert().executeInsert( config , new EntityGenerator<Employee>() {
-			public Employee generate(Long i) {
-				return new Employee(i);
+		config.setUsesBatch(true);
+		new EntityManagerInsert().executeInsert( config , new EntityGenerator<EmployeeWithoutIdentity>() {
+			public EmployeeWithoutIdentity generate(Long i) {
+				return new EmployeeWithoutIdentity(i);
 			}
 		} );
 		emf.close();

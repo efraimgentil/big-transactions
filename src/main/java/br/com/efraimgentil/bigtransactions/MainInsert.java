@@ -37,6 +37,13 @@ public class MainInsert {
 		new SessionInsert().executeInsert( c , employeeWIGenerator );
 		new StatelessSessionInsert().executeInsert( c , employeeWIGenerator );
 		
+		System.out.println( "Same generation without identity generetedValue and cleaning");
+		//The employeeWI uses the sequence generator, and allocates 1000 keys to be used
+		c.setUsesBatch(true);
+		new EntityManagerInsert().executeInsert( c , employeeWIGenerator );
+		new SessionInsert().executeInsert( c , employeeWIGenerator );
+		new StatelessSessionInsert().executeInsert( c , employeeWIGenerator );
+		
 		System.out.println( "Same generation without identity generatedValue and using batch inserts");
 		//Note that to the batch inserts work, we need to use a generatedValue with strategy deferent from identity
 		c.setUsesBatch(true);

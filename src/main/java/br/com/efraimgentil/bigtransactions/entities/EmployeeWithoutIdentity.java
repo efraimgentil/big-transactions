@@ -13,28 +13,25 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.GenericGenerator;
+
 @Entity
 @Table(name="employee")
 public class EmployeeWithoutIdentity implements Serializable{
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE , generator = "employee_id_seq")
+	@GeneratedValue(strategy = GenerationType.AUTO , generator = "employee_id_seq")
 	@SequenceGenerator(name="employee_id_seq" , sequenceName="employee_id_seq" , allocationSize = 1000 )
 	@Column(name="id")
 	private Long id;
-	
 	@Column(name="name")
 	private String name;
-	
 	@Column(name="sex")
 	private String sex;
-	
 	@Column(name="father_name")
 	private String fatherName;
-	
 	@Column(name="mother_name")
 	private String motherName;
-	
 	@Temporal(TemporalType.DATE)
 	@Column(name="birth_date")
 	private Date birthDate;
@@ -100,5 +97,4 @@ public class EmployeeWithoutIdentity implements Serializable{
 		this.birthDate = birthDate;
 	}
 	
-
 }
