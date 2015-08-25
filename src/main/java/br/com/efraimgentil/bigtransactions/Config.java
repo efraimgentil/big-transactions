@@ -8,6 +8,7 @@ public class Config {
 	private long max;
 	private long breakAt;
 	private boolean showLog;
+	private boolean usesBatch;
 	private EntityManagerFactory emf;
 	
 	public Config(long max, boolean showLog) {
@@ -40,6 +41,14 @@ public class Config {
 
 	public void setEmf(EntityManagerFactory emf) {
 		this.emf = emf;
+	}
+
+	public boolean isUsesBatch() {
+		return usesBatch;
+	}
+
+	public void setUsesBatch(boolean usesBatch) {
+		this.usesBatch = usesBatch;
 	}
 	
 	

@@ -22,14 +22,18 @@ public class EntityManagerInsert implements Insert {
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("examplePU");
 		Config config = new Config(1000000l, true);
 		config.setEmf(emf);
-		new EntityManagerInsert().executeInsert( config );
+		new EntityManagerInsert().executeInsert( config , new EntityGenerator<Employee>() {
+			public Employee generate(Long i) {
+				return new Employee(i);
+			}
+		} );
 		emf.close();
 		System.exit(0);
 	}
 
-	public void executeInsert(Config config) {
+	public void executeInsert(Config config , EntityGenerator<?> generator) {
 		EntityManagerFactory emf = config.getEmf();
-		EntityManager em = emf.createEntityManager();new StatelessSessionInsert().executeInsert( config );
+		EntityManager em = emf.createEntityManager();
 		EntityTransaction transaction = em.getTransaction();
 		
 		long time = System.currentTimeMillis();
@@ -41,10 +45,12 @@ public class EntityManagerInsert implements Insert {
 				if( i % 1000l == 0l){
 					if(config.isShowLog())
 						System.out.println( i + " - " +  ( System.currentTimeMillis() - time ) / 1000 + " seconds "  );
-					em.flush();
-					em.clear();
+					if(config.isUsesBatch()){
+						em.flush();
+						em.clear();
+					}
 				}
-				em.persist(new Employee(i) );
+				em.persist( generator.generate(i) );
 			}
 			transaction.commit();
 			System.out.println(getClass().getSimpleName()  + ": "+ config.getMax() 

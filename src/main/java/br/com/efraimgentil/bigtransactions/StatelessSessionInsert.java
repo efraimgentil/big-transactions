@@ -17,14 +17,18 @@ public class StatelessSessionInsert implements Insert{
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("examplePU");
 		Config config = new Config(1000000l, true);
 		config.setEmf(emf);
-		new StatelessSessionInsert().executeInsert( config );
+		new StatelessSessionInsert().executeInsert( config  , new EntityGenerator<Employee>() {
+			public Employee generate(Long i) {
+				return new Employee(i);
+			}
+		} );
 		emf.close();
 		System.exit(0);
 	}
 	
 	
 	
-	public void executeInsert(Config config) {
+	public void executeInsert(Config config , EntityGenerator<?> generator) {
 		EntityManagerFactory emf = config.getEmf();
 		EntityManager em = emf.createEntityManager();
 		
@@ -41,8 +45,11 @@ public class StatelessSessionInsert implements Insert{
 				if( i % 1000l == 0l){
 					if(config.isShowLog())
 						System.out.println( i + " - " +  ( System.currentTimeMillis() - time ) / 1000 + " seconds "  );
+					if(config.isUsesBatch()){
+						//DONT HAVE
+					}
 				}
-				oss.insert(  new Employee(i) );
+				oss.insert(  generator.generate(i) );
 			}
 			transaction.commit();
 			System.out.println(getClass().getSimpleName()  + ": "+ config.getMax() + "  Inserts, Total time: " +  ( System.currentTimeMillis() - time ) / 1000 + " seconds "  );
