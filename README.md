@@ -39,7 +39,7 @@ How we start using the batch processing ? first we will configure our persistenc
 </persistence-unit>
 ```
 
-The property "hibernate.jdbc.batch_size" configures our batch size, so we will be working with 1000 instructions per time, but note if we want to use the batch our entities should not have the @GeneratedValue(strategy = GenerationType.IDENTITY) annotation in their ID attribute, because this annotation disables the batch processing transparently, and you will never see any difference, with this in mind we are using a sequence to our id attribute, and we are allocating 1000 keys, because that is the size of our "batch_size"
+The property "hibernate.jdbc.batch_size" configures our batch size, so we will be working with 1000 instructions per time, but note if we want to use the batch our entities should not have the @GeneratedValue(strategy = GenerationType.IDENTITY) annotation in their ID attribute, because this annotation disables the batch processing transparently, and you will never see any difference, with this in mind we are using a sequence to our id attribute, and we are alloemcating 1000 keys, because that is the size of our "batch_size"
 
 ```java
 @Entity
@@ -47,7 +47,7 @@ The property "hibernate.jdbc.batch_size" configures our batch size, so we will b
 public class EmployeeWithoutIdentity implements Serializable{
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO , generator = "employee_id_seq")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE , generator = "employee_id_seq")
 	@SequenceGenerator(name="employee_id_seq" , sequenceName="employee_id_seq" , allocationSize = 1000 )
 	@Column(name="id")
 	private Long id;
@@ -65,4 +65,47 @@ public class EmployeeWithoutIdentity implements Serializable{
 	
 	//	...	
 }
+```
+
+Note that you will lose some keys for your pk and will have some "jumps" in your sequence count, there is a trick to change that, unfortunately  this is a vendor specific trick, you will use the @GenericGenerator(name="increment" , strategy="increment"), but be aware of what this is actually doing, this config will do a select for your max (id) in your table and increment from there, this is ok but your sequence will be forgotten, and if any developer try to manually insert something will get a biThis is your call, you dicide what to use, if will don't mind losing some keys, preffer to use the sequence generatorg error!
+
+```java
+@Entity
+@Table(name="employee")
+public class EmployeeWithoutIdentity implements Serializable{
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE , generator = "increment")
+	@GenericGenerator(name="increment" , strategy="increment")
+	@Column(name="id")
+	private Long id;
+	@Column(name="name")
+	private String name;
+	@Column(name="sex")
+	private String sex;
+	@Column(name="father_name")
+	private String fatherName;
+	@Column(name="mother_name")
+	private String motherName;
+	@Temporal(TemporalType.DATE)
+	@Column(name="birth_date")
+	private Date birthDate;
+	//...
+}
+```
+
+This is your call, you will decide what to use, if you don't mind losing some keys in the sequence, preffer to use the sequence generator.
+
+Then we will do our persistence normaly, but we will count each operation, and flush our entityManager/session when we reash our batch_size see:
+
+```java
+\\...
+	\\ LOOP
+	if( i % 1000l == 0l){
+		em.flush();
+		em.clear();
+	}
+	entityManager.persist( employee );
+	i++
+\\...
 ```

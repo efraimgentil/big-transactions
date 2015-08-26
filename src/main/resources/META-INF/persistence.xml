@@ -17,7 +17,6 @@
 			<property name="hibernate.connection.url" value="jdbc:postgresql://localhost:5432/test" />
 <!-- 			<property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider" /> -->
 <!-- 			<property name="hibernate.show_sql" value="true" /> -->
-<!-- 			<property name="hibernate.hbm2ddl.auto" value="create-drop" /> -->
 <!-- 			<property name="hibernate.jdbc.batch_size" value="1000" /> -->
 		</properties>
 
@@ -35,6 +34,8 @@
 			<property name="hibernate.connection.driver_class" value="org.postgresql.Driver" />
 			<property name="hibernate.connection.url" value="jdbc:postgresql://localhost:5432/test" />
 			<property name="hibernate.jdbc.batch_size" value="1000" />
+<!-- 			<property name="hibernate.show_sql" value="true" /> -->
+<!-- 			<property name="hibernate.format_sql" value="true" /> -->
 		</properties>
 
 	</persistence-unit>

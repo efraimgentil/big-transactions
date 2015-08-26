@@ -20,8 +20,8 @@ import org.hibernate.annotations.GenericGenerator;
 public class EmployeeWithoutIdentity implements Serializable{
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO , generator = "employee_id_seq")
-	@SequenceGenerator(name="employee_id_seq" , sequenceName="employee_id_seq" , allocationSize = 1000 )
+	@GeneratedValue(strategy = GenerationType.SEQUENCE , generator = "employee_id_seq")
+	@SequenceGenerator(name="employee_id_seq" , sequenceName="employee_id_seq" , allocationSize = 500 )
 	@Column(name="id")
 	private Long id;
 	@Column(name="name")
